@@ -1,20 +1,20 @@
 import React from "react";
 
-const VideoListItem = ({ video, onVideoSelect }) => {
+const VideoThumbnail = ({ video, onVideoSelect }) => {
   const imageUrl = video.snippet.thumbnails.default.url;
 
   return (
     <li onClick={() => onVideoSelect(video)} className="list-group-item">
+      <div class="media-body">
+        <div class="media-heading">{video.snippet.title}</div>
+      </div>
       <div className="video-list media">
         <div className="media-left">
           <img className="media-object" src={imageUrl} />
-        </div>
-        <div className="media-body">
-          <div className="media-heading">{video.snippet.title}</div>
         </div>
       </div>
     </li>
   );
 };
 
-export default VideoListItem;
+export default VideoThumbnail;

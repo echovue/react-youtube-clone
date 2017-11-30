@@ -5,7 +5,7 @@ import YTSearch from "youtube-api-search";
 import SearchBar from "./components/search_bar";
 import VideoList from "./components/video_list";
 import VideoDetail from "./components/video_detail";
-const API_KEY = "<<INSERT VALID GOOGLE/YOUTUBE DATA API KEY HERE>>";
+const YOUTUBE_API_KEY = "";
 
 class App extends Component {
   constructor(props) {
@@ -13,34 +13,37 @@ class App extends Component {
 
     this.state = {
       videos: [],
-      selectedVideo: null
+      mainVideo: null
     };
 
-    this.videoSearch("surfboards");
+    this.youtubeSearch("People are Awesome");
   }
 
-  videoSearch(term) {
-    YTSearch({ key: API_KEY, term: term }, videos => {
+  youtubeSearch(term) {
+    if (YOUTUBE_API_KEY === "") {
+      Rollbar.critical("YouTube API Key Required in index.js");
+    }
+    YTSearch({ key: YOUTUBE_API_KEY, term: term }, videos => {
       this.setState({
-        videos: videos,
-        selectedVideo: videos[0]
+        videos,
+        mainVideo: videos[0]
       });
     });
   }
 
   render() {
     const videoSearch = _.debounce(term => {
-      this.videoSearch(term);
+      this.youtubeSearch(term);
     }, 300);
 
     return (
       <div>
         <SearchBar onSearchTermChange={videoSearch} />
-        <VideoDetail video={this.state.selectedVideo} />
         <VideoList
-          onVideoSelect={selectedVideo => this.setState({ selectedVideo })}
+          onVideoSelect={mainVideo => this.setState({ mainVideo })}
           videos={this.state.videos}
         />
+        <VideoDetail video={this.state.mainVideo} />
       </div>
     );
   }
